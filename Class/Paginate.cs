@@ -9,8 +9,8 @@ namespace Util.Common
         }
         public int Count { get; set; }
         public int Page { get; set; }
-        public LogicalOperators Operator { get; set; }
-        public List<FilterPaginate> FiltersPaginate { get; set; }
+        public List<FilterPaginate> Filters { get; set; }
+        public List<OrderPaginate> Orders { get; set; }
         public int RowsTotal { get; set; }
         public int PagesTotal { get; set; }
         public List<T> Data { get; set; }
