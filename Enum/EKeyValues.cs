@@ -1,5 +1,5 @@
 ﻿using System;
-namespace UtilNuget
+namespace Util.Common
 {
 	public enum EKeyValues
 	{

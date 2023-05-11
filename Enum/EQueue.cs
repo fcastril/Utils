@@ -1,5 +1,5 @@
 ﻿using System;
-namespace UtilNuget.Enum
+namespace Util.Common
 {
 	public enum EQueue
 	{
