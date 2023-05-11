@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Util   .Common
+namespace Util.Common
 {
     [AttributeUsage(AttributeTargets.All)]
     public sealed class ValidatedNotNullAttribute: Attribute { }
@@ -35,7 +34,7 @@ namespace Util   .Common
                     }
 
                     OrderBy = (i == 0) ?
-                            
+
                                 ExpressionHelper.OrderBy(query, orders[i].Name, eOrden) :
                                 ExpressionHelper.ThenBy(query, orders[i].Name, eOrden);
 
@@ -48,9 +47,6 @@ namespace Util   .Common
 
             return query;
         }
-
-
-
         public static string FirstCharToUpper(this string s)
         {
             // Check for empty string.  
@@ -60,6 +56,45 @@ namespace Util   .Common
             }
 
             return char.ToUpper(s[0], CultureInfo.CurrentCulture) + s[1..].ToLower(CultureInfo.CurrentCulture);
+        }
+
+        public static IQueryable<T> WhereDynamic<T>(this IQueryable<T> query, List<FilterPaginate> filters)
+        {
+            if (filters.IsNotNull())
+            {
+                return query.CreateWhereDynamic(filters);
+            }
+
+            return query;
+        }
+        private static IQueryable<T> CreateWhereDynamic<T>(this IQueryable<T> query, List<FilterPaginate> filters)
+        {
+            Expression<Func<T, bool>> expression = null;
+            foreach (FilterPaginate filter in filters)
+            {
+                if (!filter.Property.IsValid() || !filter.Value.IsNotNull())
+                {
+                    continue;
+                }
+
+                expression = AddConditionalQuery(expression, filter);
+                if (filter.Value.IsValid())
+                {
+                    expression = expression.Or(ExpressionHelper.GetCriteriaWhere<T>(filter.Property, filter.Operator, filter.Value.Trim()));
+                }
+            }
+
+            query = query.Where(expression);
+            return query;
+        }
+        private static Expression<Func<T, bool>> AddConditionalQuery<T>(Expression<Func<T, bool>> queryFilter, FilterPaginate filter)
+        {
+            queryFilter = (!queryFilter.IsNotNull()) 
+                ? ExpressionHelper.GetCriteriaWhere<T>(filter.Property, filter.Operator, filter.Value.Trim()) 
+                : ((filter.Conditional != LogicalOperators.Or) 
+                        ? queryFilter.And(ExpressionHelper.GetCriteriaWhere<T>(filter.Property, filter.Operator, filter.Value.Trim())) 
+                        : queryFilter.Or(ExpressionHelper.GetCriteriaWhere<T>(filter.Property, filter.Operator, filter.Value.Trim())));
+            return queryFilter;
         }
     }
 }
