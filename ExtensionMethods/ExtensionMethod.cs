@@ -71,20 +71,12 @@ namespace Util.Common
         {
             Expression<Func<T, bool>> expression = null;
             foreach (FilterPaginate filter in filters)
-
             {
-                if (!filter.Property.IsValid() || !filter.Value.IsNotNull())
+                if (filter.Property.IsValid() && filter.Value.IsNotNull())
                 {
-                    continue;
-                }
-
-                expression = AddConditionalQuery(expression, filter);
-                if (filter.Value.ToString().IsValid())
-                {
-                    expression = expression.Or(ExpressionHelper.GetCriteriaWhere<T>(filter.Property, filter.Operator, filter.Value.ToString()));
+                    expression = AddConditionalQuery(expression, filter);
                 }
             }
-
             query = query.Where(expression);
             return query;
         }

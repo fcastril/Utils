@@ -64,20 +64,21 @@ namespace Util.Common
                 }
 
                 Type conversionType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+                var typeConvert = property.PropertyType == typeof(Guid) ? Guid.Parse(fieldValue.ToString()) : Convert.ChangeType(fieldValue, conversionType);
                 switch (operationExpression)
                 {
                     case Operations.Equals:
-                        return Expression.Lambda<Func<T, bool>>(Expression.Equal(memberExpression, Expression.Constant(Convert.ChangeType(fieldValue, conversionType), property.PropertyType)), new ParameterExpression[1] { parameterExpression });
+                        return Expression.Lambda<Func<T, bool>>(Expression.Equal(memberExpression, Expression.Constant(typeConvert, property.PropertyType)), new ParameterExpression[1] { parameterExpression });
                     case Operations.NotEquals:
-                        return Expression.Lambda<Func<T, bool>>(Expression.NotEqual(memberExpression, Expression.Constant(Convert.ChangeType(fieldValue, conversionType), property.PropertyType)), new ParameterExpression[1] { parameterExpression });
+                        return Expression.Lambda<Func<T, bool>>(Expression.NotEqual(memberExpression, Expression.Constant(typeConvert, property.PropertyType)), new ParameterExpression[1] { parameterExpression });
                     case Operations.Minor:
-                        return Expression.Lambda<Func<T, bool>>(Expression.LessThan(memberExpression, Expression.Constant(Convert.ChangeType(fieldValue, conversionType), property.PropertyType)), new ParameterExpression[1] { parameterExpression });
+                        return Expression.Lambda<Func<T, bool>>(Expression.LessThan(memberExpression, Expression.Constant(typeConvert, property.PropertyType)), new ParameterExpression[1] { parameterExpression });
                     case Operations.MinorEquals:
-                        return Expression.Lambda<Func<T, bool>>(Expression.LessThanOrEqual(memberExpression, Expression.Constant(Convert.ChangeType(fieldValue, conversionType), property.PropertyType)), new ParameterExpression[1] { parameterExpression });
+                        return Expression.Lambda<Func<T, bool>>(Expression.LessThanOrEqual(memberExpression, Expression.Constant(typeConvert, property.PropertyType)), new ParameterExpression[1] { parameterExpression });
                     case Operations.Mayor:
-                        return Expression.Lambda<Func<T, bool>>(Expression.GreaterThan(memberExpression, Expression.Constant(Convert.ChangeType(fieldValue, conversionType), property.PropertyType)), new ParameterExpression[1] { parameterExpression });
+                        return Expression.Lambda<Func<T, bool>>(Expression.GreaterThan(memberExpression, Expression.Constant(typeConvert, property.PropertyType)), new ParameterExpression[1] { parameterExpression });
                     case Operations.MayorEquals:
-                        return Expression.Lambda<Func<T, bool>>(Expression.GreaterThanOrEqual(memberExpression, Expression.Constant(Convert.ChangeType(fieldValue, conversionType), property.PropertyType)), new ParameterExpression[1] { parameterExpression });
+                        return Expression.Lambda<Func<T, bool>>(Expression.GreaterThanOrEqual(memberExpression, Expression.Constant(typeConvert, property.PropertyType)), new ParameterExpression[1] { parameterExpression });
                     case Operations.Like:
                         {
                             MethodInfo method6 = typeof(string).GetMethod("Contains", new Type[1] { typeof(string) });
