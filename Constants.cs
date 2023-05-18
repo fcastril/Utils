@@ -4,13 +4,7 @@ namespace Utilidades
 {
     public static class Constants
     {
-        public const string UriForDefaultWebApi = "api/v1/";
 
-        public const string NameProject = "API INTEGRATIONS MTWO";
-        public const string NameProjectOrchestrator = "API INTEGRATIONS MTWO - ORCHESTRATOR";
-        public const string NameProjectSap = "API INTEGRATIONS MTWO - SAP";
-
-        public const string DescriptionProject = "API for consuming services and integration configuration and as a basis for integration with other sources";
 
         public const string AzureBlobVariable = "AzureStorage";
 

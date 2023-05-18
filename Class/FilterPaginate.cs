@@ -7,7 +7,7 @@
 
         }
         public string Property { get; set; }
-        public string Value { get; set; }
+        public object Value { get; set; }
         public Operations Operator { get; set; }
         public LogicalOperators Conditional { get; set; } 
     }

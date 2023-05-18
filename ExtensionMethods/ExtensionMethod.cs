@@ -71,6 +71,7 @@ namespace Util.Common
         {
             Expression<Func<T, bool>> expression = null;
             foreach (FilterPaginate filter in filters)
+
             {
                 if (!filter.Property.IsValid() || !filter.Value.IsNotNull())
                 {
@@ -78,9 +79,9 @@ namespace Util.Common
                 }
 
                 expression = AddConditionalQuery(expression, filter);
-                if (filter.Value.IsValid())
+                if (filter.Value.ToString().IsValid())
                 {
-                    expression = expression.Or(ExpressionHelper.GetCriteriaWhere<T>(filter.Property, filter.Operator, filter.Value.Trim()));
+                    expression = expression.Or(ExpressionHelper.GetCriteriaWhere<T>(filter.Property, filter.Operator, filter.Value.ToString()));
                 }
             }
 
@@ -90,10 +91,10 @@ namespace Util.Common
         private static Expression<Func<T, bool>> AddConditionalQuery<T>(Expression<Func<T, bool>> queryFilter, FilterPaginate filter)
         {
             queryFilter = (!queryFilter.IsNotNull()) 
-                ? ExpressionHelper.GetCriteriaWhere<T>(filter.Property, filter.Operator, filter.Value.Trim()) 
+                ? ExpressionHelper.GetCriteriaWhere<T>(filter.Property, filter.Operator, filter.Value.ToString().Trim()) 
                 : ((filter.Conditional != LogicalOperators.Or) 
-                        ? queryFilter.And(ExpressionHelper.GetCriteriaWhere<T>(filter.Property, filter.Operator, filter.Value.Trim())) 
-                        : queryFilter.Or(ExpressionHelper.GetCriteriaWhere<T>(filter.Property, filter.Operator, filter.Value.Trim())));
+                        ? queryFilter.And(ExpressionHelper.GetCriteriaWhere<T>(filter.Property, filter.Operator, filter.Value.ToString().Trim())) 
+                        : queryFilter.Or(ExpressionHelper.GetCriteriaWhere<T>(filter.Property, filter.Operator, filter.Value.ToString().Trim())));
             return queryFilter;
         }
     }
